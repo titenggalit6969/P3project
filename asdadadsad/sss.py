@@ -1,108 +1,84 @@
 import random
 
-def generate_equation(difficulty):
-  """Generates a math equation based on the given difficulty."""
+# Define the different equations
+EQUATIONS = {
+    "addition": "+",
+    "subtraction": "-",
+    "multiplication": "*",
+    "division": "/"
+}
 
-  if difficulty == "easy":
-    # Generate a random number between 1 and 10.
-    a = random.randint(1, 10)
-    b = random.randint(1, 10)
+# Define the different difficulty levels
+DIFFICULTY_LEVELS = {
+    "easy": {
+        "range": (1, 11),
+        "chances": 3
+    },
+    "moderate": {
+        "range": (11, 101),
+        "chances": 3
+    },
+    "difficult": {
+        "range": (101, 1001),
+        "chances": 3,
+        "time_limit": 10
+    }
+}
 
-    # Choose a random operation from addition, subtraction, multiplication, and division.
-    operation = random.choice(["+", "-", "*", "/"])
+# Define a function to generate a random equation
+def generate_random_equation(equation_type, difficulty_level):
+    """Generates a random equation based on the given equation type and difficulty level.
 
-    # Generate the equation.
-    equation = f"{a} {operation} {b}"
+    Args:
+        equation_type: The type of equation to generate, e.g. "addition", "subtraction", "multiplication", or "division".
+        difficulty_level: The difficulty level of the equation to generate, e.g. "easy", "moderate", or "difficult".
 
-    return equation
+    Returns:
+        A random equation tuple, where the first element is the equation string and the second element is the correct answer.
+    """
 
-  elif difficulty == "moderate":
-    # Generate two random numbers between 11 and 100.
-    a = random.randint(11, 100)
-    b = random.randint(11, 100)
+    # Get the range of numbers to use in the equation
+    number_range = DIFFICULTY_LEVELS[difficulty_level]["range"]
 
-    # Choose a random operation from addition, subtraction, multiplication, and division.
-    operation = random.choice(["+", "-", "*", "/"])
+    # Generate two random numbers within the given range
+    num1 = random.randint(number_range[0], number_range[1])
+    num2 = random.randint(number_range[0], number_range[1])
 
-    # Generate the equation.
-    equation = f"{a} {operation} {b}"
+    # Generate the equation string
+    equation_string = str(num1) + EQUATIONS[equation_type] + str(num2)
 
-    return equation
+    # Calculate the correct answer
+    correct_answer = eval(equation_string)
 
-  elif difficulty == "difficult":
-    # Generate two random numbers between 101 and 1000.
-    a = random.randint(101, 1000)
-    b = random.randint(101, 1000)
+    return equation_string, correct_answer
 
-    # Choose a random operation from addition, subtraction, multiplication, and division.
-    operation = random.choice(["+", "-", "*", "/"])
-
-    # Generate the equation.
-    equation = f"{a} {operation} {b}"
-
-    return equation
-
-def check_answer(equation, answer):
-  """Checks if the given answer is correct for the given equation."""
-
-  # Split the equation into the operands and the operator.
-  operands = equation.split(" ")
-  operator = operands[1]
-
-  # Convert the operands to integers.
-  a = int(operands[0])
-  b = int(operands[2])
-
-  # Perform the operation on the operands and compare the result to the given answer.
-  if operator == "+":
-    result = a + b
-    if result == answer:
-      return True
-    else:
-      return False
-  elif operator == "-":
-    result = a - b
-    if result == answer:
-      return True
-    else:
-      return False
-  elif operator == "*":
-    result = a * b
-    if result == answer:
-      return True
-    else:
-      return False
-  elif operator == "/":
-    result = a // b
-    if result == answer:
-      return True
-    else:
-      return False
-
+# Define a function to play the game
 def play_game():
-  """Plays the math mastermind game."""
+    """Plays the math game."""
 
-  # Choose the difficulty of the game.
-  difficulty = input("Choose difficulty (easy, moderate, or difficult): ")
+    # Get the user's desired equation type and difficulty level
+    equation_type = input("Choose an equation type (addition, subtraction, multiplication, or division): ")
+    difficulty_level = input("Choose a difficulty level (easy, moderate, or difficult): ")
 
-  # Generate an equation based on the chosen difficulty.
-  equation = generate_equation(difficulty)
+    # Generate a random equation
+    equation_string, correct_answer = generate_random_equation(equation_type, difficulty_level)
 
-  # Print the equation to the user.
-  print(f"Equation: {equation}")
+    # Display the equation to the user
+    print(equation_string)
 
-  # Get the user's answer.
-  answer = input("Answer: ")
+    # Get the user's answer
+    user_answer = input("Enter your answer: ")
 
-  # Check if the user's answer is correct.
-  correct = check_answer(equation, answer)
+    # Check if the user's answer is correct
+    correct = False
+    if user_answer == str(correct_answer):
+        correct = True
 
-  # If the user's answer is correct, print a congratulations message.
-  if correct:
-    print("Congratulations! Your answer is correct!")
-  # Otherwise, print a message stating that the user's answer is incorrect.
-  else:
-    print("Incorrect answer. The correct answer is", eval(equation))
+    # Display the results to the user
+    if correct:
+        print("Correct!")
+    else:
+        print("Incorrect. The correct answer is", correct_answer)
 
-if __name__ == "__main__":
-  play_game()
+# Start the game
+play_game()
